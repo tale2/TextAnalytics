@@ -57,7 +57,7 @@ googleURL='https://www.googleapis.com/books/v1/volumes?q=isbn:'
 for j in range(len(booklist.index)):
     # call google API with 1st ISBN
     ISBN=booklist.iloc[j,4]
-    query2 = googleURL + ISBN
+    query2 = googleURL + str(ISBN)
     response2 = requests.get(query2)
     description = response2.json()
     time.sleep(1)
@@ -65,7 +65,7 @@ for j in range(len(booklist.index)):
     # if the first ISBN doesn't work, try second
     if description['totalItems']==0:
         ISBN=booklist.iloc[j,5]
-        query2 = googleURL + ISBN
+        query2 = googleURL + str(ISBN)
         response2 = requests.get(query2)
         description = response2.json()
         time.sleep(1)
@@ -73,7 +73,7 @@ for j in range(len(booklist.index)):
         # if second ISBN doesn't work, try 3rd
         if description['totalItems']==0:
             ISBN=booklist.iloc[j,6]
-            query2 = googleURL + ISBN
+            query2 = googleURL + str(ISBN)
             response2 = requests.get(query2)
             description = response2.json()
             time.sleep(1)
@@ -82,18 +82,18 @@ for j in range(len(booklist.index)):
             if description['totalItems']==0: continue
             # if it does work- add description & category to df
             booklist.iloc[j,2]=description['items'][0]['volumeInfo']['description']
-            # add google category
-            booklist.iloc[j,3]=description['items'][0]['volumeInfo']['categories'][0]
+            # add google category if there is one
+            if ('categories' in description['items'][0]['volumeInfo'].keys())==True: booklist.iloc[j,3]=description['items'][0]['volumeInfo']['categories'][0]
         
         # if second ISBN works, add to df
         else:
             # add description
             booklist.iloc[j,2]=description['items'][0]['volumeInfo']['description']
-            # add google category
-            booklist.iloc[j,3]=description['items'][0]['volumeInfo']['categories'][0]
+            # add google category if there is one
+            if ('categories' in description['items'][0]['volumeInfo'].keys())==True: booklist.iloc[j,3]=description['items'][0]['volumeInfo']['categories'][0]
     # if first ISBN works, add to df
     else:
         # add description
         booklist.iloc[j,2]=description['items'][0]['volumeInfo']['description']
-        # add google category
-        booklist.iloc[j,3]=description['items'][0]['volumeInfo']['categories'][0]
+        # add google category if there is one
+        if ('categories' in description['items'][0]['volumeInfo'].keys())==True: booklist.iloc[j,3]=description['items'][0]['volumeInfo']['categories'][0]
