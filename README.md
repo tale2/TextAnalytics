@@ -1,1 +1,2 @@
-# TextAnalytics
+# Text Analytics Project
+
